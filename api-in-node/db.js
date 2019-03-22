@@ -18,9 +18,16 @@ function getRow(id) {
       id
     ]
   ).then((dbResult) => {
-    if(!dbResult.rows) return "No rows.";
+    if(!dbResult.rows[0]) return JSON.stringify({
+      error: true,
+      msg: "No user for that ID."
+    });
     const row = dbResult.rows[0];
-    return "ID: " + row.id + ", User ID: " + row.user_id + ", Timestamp: " + row.timestamp
+    return JSON.stringify({
+      id: row.id,
+      user_id: row.user_id,
+      timestamp: row.timestamp
+    })
   });
 }
 module.exports = getRow;
