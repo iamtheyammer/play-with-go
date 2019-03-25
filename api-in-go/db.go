@@ -25,11 +25,13 @@ type Error struct {
 	Msg string `json:"msg"`
 }
 
+var globalDB *sql.DB = connectToDb()
+
 /*
 GetRow - gets a row by passing in the database from ConnectToDb and the Row ID
 */
-func GetRow(db *sql.DB, id int) string {
-	row := db.QueryRow("SELECT * FROM already_messaged_users WHERE id=$1", id)
+func GetRow(id int) string {
+	row := globalDB.QueryRow("SELECT * FROM already_messaged_users WHERE id=$1", id)
 	fmt.Println("GetRow ID", id)
 	var item Dbrow
 	err := row.Scan(&item.ID, &item.UserID, &item.Timestamp)
@@ -54,7 +56,7 @@ func GetRow(db *sql.DB, id int) string {
 /*
 ConnectToDb - Gives you a database object for using GetRow
 */
-func ConnectToDb() *sql.DB {
+func connectToDb() *sql.DB {
 	connStr := "user=sammendelson dbname=sammendelson sslmode=disable"
 	db, err := sql.Open("postgres", connStr)
 	checkError(err)
